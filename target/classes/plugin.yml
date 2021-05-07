@@ -1,0 +1,17 @@
+api-version: 1.16
+name: DuckGames
+author: bluewingtitan
+version: 1.0
+main: com.bluewingtitan.duckgames.Plugin
+load: POSTWORLD
+
+commands:
+  duckstart:
+    description: Starts the game
+    usage: /duckstart
+    permission: duckgames.game.start
+
+  duckbug:
+    description: Debug Command
+    usage: /duckbug lulzies
+    permission: duckgames.debug
