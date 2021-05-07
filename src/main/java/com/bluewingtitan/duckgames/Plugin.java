@@ -1,11 +1,15 @@
 package com.bluewingtitan.duckgames;
 
-import org.bukkit.Bukkit;
+import org.bukkit.*;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -13,11 +17,14 @@ import org.bukkit.potion.PotionEffectType;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Plugin extends JavaPlugin implements Listener {
 
 
     public static Plugin plugin;
+
+    public static Random random = new Random();
 
     FileConfiguration config;
     public List<Step> steps = new ArrayList<Step>();
@@ -102,11 +109,21 @@ public class Plugin extends JavaPlugin implements Listener {
 
 
     public void startShrinking() {
+        // Set start border
+        shrink(config.getInt("startBorder"),0);
+
+
+        // Remove blindness, add starting invunerability
+        Bukkit.getServer().dispatchCommand(console,"effect clear @a");
+        Bukkit.getServer().dispatchCommand(console,"effect give @a minecraft:resistance 30 10 true");
+
         // Spread Players
         spreadPlayers();
 
-        // Remove blindness
-        Bukkit.getServer().dispatchCommand(console,"effect clear @a");
+
+        // Set gamemode and remove items
+        Bukkit.getServer().dispatchCommand(console,"gamemode survival @a");
+        Bukkit.getServer().dispatchCommand(console,"clear @a");
 
 
         started = true;
@@ -122,11 +139,78 @@ public class Plugin extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
-        event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 500000,255));
-        event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 500000,128));
+        if(started){
+            event.getPlayer().setGameMode(GameMode.SPECTATOR);
+            event.getPlayer().sendMessage("Du bist nach dem Start des Matches gejoined und bist nun Spectator.");
+        } else {
+            // Disable dying and moving.
+            event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 500000,255));
+            event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 500000,255));
+            event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 500000,255));
+            event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 500000,255));
+            event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 500000,255));
+            event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 500000,255));
+        }
     }
 
+    @EventHandler
+    public void onPlayerDie(PlayerDeathEvent event){
+        if(!started) return;
 
+        playerDropOutLogic();
+
+        event.getEntity().setGameMode(GameMode.SPECTATOR);
+    }
+
+    public void onPlayerLeave(PlayerQuitEvent event){
+        if(!started) return;
+
+        playerDropOutLogic();
+    }
+
+    private void playerDropOutLogic() {
+
+        int playersAlive = 0;
+        Player lastPlayerCandidate = null;
+
+        for (Player player : Bukkit.getOnlinePlayers())
+        {
+            //Player the sound for all players
+            if(player.getGameMode() == GameMode.SURVIVAL) {
+                playersAlive++;
+                lastPlayerCandidate = player; // save pointer in case it might be needed later.
+            }
+            player.playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, SoundCategory.PLAYERS, 10f,1);
+        }
+
+        if(playersAlive == 1){
+            lastPlayerCandidate.setGameMode(GameMode.CREATIVE);
+            // Last man standing!
+            for (Player player : Bukkit.getOnlinePlayers())
+            {
+                player.playSound(player.getLocation(), Sound.EVENT_RAID_HORN , SoundCategory.MASTER, 10f,1);
+                player.sendTitle(ChatColor.GOLD + "SIEGER, SIEGER, ENTENKRIEGER!",ChatColor.RED + lastPlayerCandidate.getDisplayName() + ChatColor.WHITE + " IST DIE ULTIMATIVE ENTE!",1,5000,10);
+            }
+            started = false;
+        }
+
+        if(playersAlive == 0){
+            // Last man standing!
+            for (Player player : Bukkit.getOnlinePlayers())
+            {
+                player.playSound(player.getLocation(), Sound.EVENT_RAID_HORN , SoundCategory.MASTER, 10f,1);
+                player.sendTitle(ChatColor.GOLD + "D:",ChatColor.RED + "NIEMAND TRÄGT DIESMAL DEN SIEG DAVON!",1,5000,10);
+            }
+            started = false;
+        }
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent e){
+        if(started) return;
+        // Lock Non-OP Players in place before game started.
+        if(!e.getPlayer().isOp()) e.setCancelled(true);
+    }
 
     public void announce(String message){
         Bukkit.broadcastMessage(message);

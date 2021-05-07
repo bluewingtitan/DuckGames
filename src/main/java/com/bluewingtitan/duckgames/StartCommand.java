@@ -3,6 +3,7 @@ package com.bluewingtitan.duckgames;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public class StartCommand implements CommandExecutor {
@@ -14,6 +15,12 @@ public class StartCommand implements CommandExecutor {
                 Plugin.plugin.startShrinking();
             }
         }
+
+        if(commandSender instanceof ConsoleCommandSender){
+            //Start!
+            Plugin.plugin.startShrinking();
+        }
+
             return true;
     }
 }

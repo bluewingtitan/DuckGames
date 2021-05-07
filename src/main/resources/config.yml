@@ -32,3 +32,5 @@ startBorder: 1000
 
 playerSpreadMin: 100
 playerSpreadMax: 200
+
+enableTeams: false

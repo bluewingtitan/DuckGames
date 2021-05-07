@@ -1,11 +1,11 @@
 package com.bluewingtitan.duckgames;
 
+import com.bluewingtitan.duckgames.drops.DropHelper;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Random;
 
@@ -168,6 +168,16 @@ public class BorderCode implements Runnable{
         int Z = (int) Math.round(Math.random() * (double) (max - min + 1) + (double) min);
 
         nextDropLocation = new Location(plugin.getServer().getWorlds().get(0), X,240,Z);
+
+        Location laserStartLocation = new Location(plugin.getServer().getWorlds().get(0), X,20,Z);
+
+        try {
+            //Add Laser
+            Laser l = new Laser(laserStartLocation,nextDropLocation,2400,200);
+            l.start(plugin);
+        } catch (Exception e){
+            plugin.getServer().getLogger().info(e.toString());
+        }
     }
 
 
