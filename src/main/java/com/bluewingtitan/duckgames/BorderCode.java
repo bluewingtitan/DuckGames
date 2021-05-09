@@ -4,8 +4,11 @@ import com.bluewingtitan.duckgames.drops.DropHelper;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Random;
 
@@ -36,11 +39,36 @@ public class BorderCode implements Runnable{
         handleReveals();
         handleDrops();
 
+        plugin.time--;
+
+
+        if(plugin.time == 0){
+            for (Player p: plugin.getServer().getOnlinePlayers()) {
+                if(p.getGameMode() != GameMode.SURVIVAL) continue;
+
+                p.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 3000, 1, true, false));
+            }
+
+            plugin.announce(ChatColor.RED + " Wir haben Minute 0 erreicht!");
+            plugin.announce("Möge die beste Ente gewinnen.");
+            plugin.shrink(1, 120);
+        }
+
+        if(plugin.time < 0){
+            for (Player p: plugin.getServer().getOnlinePlayers()) {
+                if(p.getGameMode() != GameMode.SURVIVAL) continue;
+                if(!p.hasPotionEffect(PotionEffectType.GLOWING)) // Re-Apply Potion Effect if there are very smort players.
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 3000, 1, true, false));
+            }
+        }
+
+
+
+
         if(plugin.steps.isEmpty()) return;
 
 
 
-        plugin.time--;
 
         // Get current step
         if(currentStep == null){
@@ -110,6 +138,7 @@ public class BorderCode implements Runnable{
             nextReveal = null;
 
             for (Player p: plugin.getServer().getOnlinePlayers()) {
+                if(p.getGameMode() != GameMode.SURVIVAL) continue;
                 plugin.announce(p.getDisplayName() + " : " + p.getLocation().getX() + " " + p.getLocation().getY() + " " + p.getLocation().getZ());
             }
         }
@@ -143,6 +172,7 @@ public class BorderCode implements Runnable{
             //Show Distance and Time until Drop.
 
             for (Player p: plugin.getServer().getOnlinePlayers()) {
+                if(p.getGameMode() != GameMode.SURVIVAL) continue;
                 double xHelper = Math.pow(p.getLocation().getX() - nextDropLocation.getX(),2);
                 double yHelper = Math.pow(p.getLocation().getZ() - nextDropLocation.getZ(),2);
                 int distance = (int) Math.round(Math.sqrt(xHelper + yHelper));
@@ -168,6 +198,8 @@ public class BorderCode implements Runnable{
         int Z = (int) Math.round(Math.random() * (double) (max - min + 1) + (double) min);
 
         nextDropLocation = new Location(plugin.getServer().getWorlds().get(0), X,240,Z);
+        plugin.getServer().getWorlds().get(0).loadChunk(nextDropLocation.getChunk()); // Load Chunk
+        plugin.getServer().getWorlds().get(0).setChunkForceLoaded(X, Z, true); // Force load drop location chunks to force drop.
 
         Location laserStartLocation = new Location(plugin.getServer().getWorlds().get(0), X,20,Z);
 

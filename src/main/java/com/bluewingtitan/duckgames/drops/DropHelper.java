@@ -35,8 +35,10 @@ public class DropHelper {
         Entity e;
         e = w.spawnEntity(location, EntityType.MINECART_CHEST);
 
+        // Do this dump shit conversion
         StorageMinecart s = (StorageMinecart) e;
 
+        // What does this do? WTF
         for (ItemStack stack: stacks) {
             int r = random.nextInt(26);
             int x = 0;
@@ -57,6 +59,13 @@ public class DropHelper {
     }
 
     private static void fillDrops(){
+        // Yes! This is dump code. Look at you,
+        // How smort you are, pointing that out.
+        // You know?
+        // I wrote the following code just to annoy you. Yes. You.
+        // Because fuck you, it works and works well, okay?
+
+
         basicDrops = new ArrayList<Drop>();
         goodDrops = new ArrayList<Drop>();
         betterDrops = new ArrayList<Drop>();
@@ -81,23 +90,25 @@ public class DropHelper {
         basicDrops.add(new StaticDrop(Material.PINK_BED,1));
         basicDrops.add(new RandomDrop(Material.END_ROD, 4, 10, 2f));
         basicDrops.add(new RandomDrop(Material.PHANTOM_MEMBRANE, 1, 4, 0.4f));
+        basicDrops.add(new StaticDrop(CustomItemHelper.getKnockbackStick()));
+        basicDrops.add(new StaticDrop(CustomItemHelper.getLoonieToonies()));
 
         // good drops
-        goodDrops.add(new RandomDrop(Material.IRON_INGOT, 2, 5, 2f));
+        goodDrops.add(new RandomDrop(Material.IRON_INGOT, 2, 3, 1f));
         goodDrops.add(new StaticDrop(Material.GOLDEN_BOOTS,1));
         goodDrops.add(new StaticDrop(Material.GOLDEN_HELMET,1));
         goodDrops.add(new StaticDrop(Material.GOLDEN_LEGGINGS,1));
         goodDrops.add(new RandomDrop(Material.STRING, 1, 3, 0.5f));
-        goodDrops.add(new RandomDrop(Material.ARROW, 2, 5, 3f));
+        goodDrops.add(new RandomDrop(Material.ARROW, 2, 2, 2f));
         goodDrops.add(new StaticDrop(Material.BOW,1));
         goodDrops.add(new StaticDrop(Material.DARK_OAK_BOAT,1));
         goodDrops.add(new RandomDrop(Material.LADDER, 2, 10, 3f));
-        goodDrops.add(new RandomDrop(Material.SPECTRAL_ARROW, 1, 9, 0.3f));
+        goodDrops.add(new RandomDrop(Material.SPECTRAL_ARROW, 1, 3, 0.3f));
         goodDrops.add(new StaticDrop(Material.FLINT_AND_STEEL,1));
-        goodDrops.add(new RandomDrop(Material.BAT_SPAWN_EGG, 1, 2, 0.3f));
+        goodDrops.add(new RandomDrop(Material.BAT_SPAWN_EGG, 1, 2, 1f));
 
         // better drops
-        betterDrops.add(new RandomDrop(Material.TNT, 1, 5, 0.2f));
+        betterDrops.add(new RandomDrop(Material.TNT, 1, 4, 0.6f));
         betterDrops.add(new RandomDrop(Material.ENDER_PEARL, 1, 3, 0.75f));
         betterDrops.add(new RandomDrop(Material.LAPIS_LAZULI, 4, 8, 2f));
 
@@ -115,6 +126,7 @@ public class DropHelper {
         awesomeDrops.add(new RandomDrop(Material.DIAMOND, 1, 2, 0.3f));
         awesomeDrops.add(new RandomDrop(Material.SPECTRAL_ARROW, 3, 10, 1.3f));
         awesomeDrops.add(new StaticDrop(Material.GOLDEN_APPLE,3));
+        awesomeDrops.add(new StaticDrop(CustomItemHelper.fakeGapple()));
     }
 
 
