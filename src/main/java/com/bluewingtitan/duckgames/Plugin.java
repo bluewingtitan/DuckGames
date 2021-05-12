@@ -133,7 +133,7 @@ public class Plugin extends JavaPlugin implements Listener {
 
 
     private void spreadPlayers(){
-        Bukkit.getServer().dispatchCommand(console,"spreadplayers 0 0 200 100 false @a");
+        Bukkit.getServer().dispatchCommand(console,"spreadplayers 0 0 50 150 false @a");
     }
 
 
