@@ -27,6 +27,8 @@ public class BorderCode implements Runnable{
     private boolean noRevealLeft = false;
     private boolean noDropLeft = false;
 
+    private Laser laser;
+
     public BorderCode(Plugin plugin) {
         this.plugin = plugin;
     }
@@ -35,7 +37,7 @@ public class BorderCode implements Runnable{
     public void run() {
         if(!plugin.started) return;
 
-
+        handleDisconnectedPlayers();
         handleReveals();
         handleDrops();
 
@@ -102,6 +104,18 @@ public class BorderCode implements Runnable{
     }
 
 
+    private void handleDisconnectedPlayers(){
+        for (DisconnectedPlayer p: plugin.disconnectedPlayers.toArray(new DisconnectedPlayer[0])) {
+            p.secondsUntilDeath--;
+            if(p.secondsUntilDeath <= 0){
+                plugin.disconnectedPlayers.remove(p);
+                plugin.announce(ChatColor.RED + p.playerName + ChatColor.WHITE + " ist ausgeschieden.");
+                plugin.playerDropOutLogic(null);
+            }
+        }
+    }
+
+
     private void handleReveals(){
         if(noRevealLeft) return;
 
@@ -123,6 +137,7 @@ public class BorderCode implements Runnable{
 
         int timeUntilReveal = plugin.time - nextReveal.SecondsAfter;
 
+        if(timeUntilReveal == 1200) plugin.announce(ChatColor.WHITE + "Noch " + ChatColor.RED + 20 + ChatColor.WHITE + " Minuten bis zum nächsten Reveal.");
         if(timeUntilReveal == 600) plugin.announce(ChatColor.WHITE + "Noch " + ChatColor.RED + 10 + ChatColor.WHITE + " Minuten bis zum nächsten Reveal.");
         if(timeUntilReveal == 300) plugin.announce(ChatColor.WHITE + "Noch " + ChatColor.RED + 5 + ChatColor.WHITE + " Minuten bis zum nächsten Reveal.");
         if(timeUntilReveal == 120) plugin.announce(ChatColor.WHITE + "Noch " + ChatColor.RED + 2 + ChatColor.WHITE + " Minuten bis zum nächsten Reveal.");
@@ -138,8 +153,8 @@ public class BorderCode implements Runnable{
             nextReveal = null;
 
             for (Player p: plugin.getServer().getOnlinePlayers()) {
-                if(p.getGameMode() != GameMode.SURVIVAL) continue;
-                plugin.announce(p.getDisplayName() + " : " + p.getLocation().getX() + " " + p.getLocation().getY() + " " + p.getLocation().getZ());
+                if(p.getGameMode() == GameMode.SPECTATOR) continue;
+                plugin.announce(p.getDisplayName() + " : " + p.getLocation().getBlockX() + " " + p.getLocation().getBlockY() + " " + p.getLocation().getBlockZ());
             }
         }
     }
@@ -168,11 +183,25 @@ public class BorderCode implements Runnable{
 
         int timeUntilDrop = plugin.time - nextDrop.SecondsAfter;
 
+
+        if(timeUntilDrop == 600) {
+            plugin.announce(ChatColor.WHITE + "Noch " + ChatColor.RED + 10 + ChatColor.WHITE + " Minuten bis zum nächsten Drop.");
+
+            try {
+                //Add Laser
+                laser = new Laser(laserStartLocation,nextDropLocation,1200,200);
+                laser.start(plugin);
+            } catch (Exception e){
+                plugin.getServer().getLogger().info(e.toString());
+            }
+
+        }
+
         if(timeUntilDrop < 300){
             //Show Distance and Time until Drop.
 
             for (Player p: plugin.getServer().getOnlinePlayers()) {
-                if(p.getGameMode() != GameMode.SURVIVAL) continue;
+                if(p.getGameMode() == GameMode.SPECTATOR) continue;
                 double xHelper = Math.pow(p.getLocation().getX() - nextDropLocation.getX(),2);
                 double yHelper = Math.pow(p.getLocation().getZ() - nextDropLocation.getZ(),2);
                 int distance = (int) Math.round(Math.sqrt(xHelper + yHelper));
@@ -188,6 +217,8 @@ public class BorderCode implements Runnable{
     }
 
 
+    private Location laserStartLocation;
+
     private void setRandomDropLocation(){
         int size = plugin.steps.get(0).WorldBorderSize;
 
@@ -201,15 +232,9 @@ public class BorderCode implements Runnable{
         plugin.getServer().getWorlds().get(0).loadChunk(nextDropLocation.getChunk()); // Load Chunk
         plugin.getServer().getWorlds().get(0).setChunkForceLoaded(X, Z, true); // Force load drop location chunks to force drop.
 
-        Location laserStartLocation = new Location(plugin.getServer().getWorlds().get(0), X,20,Z);
+        laserStartLocation = new Location(plugin.getServer().getWorlds().get(0), X,20,Z);
 
-        try {
-            //Add Laser
-            Laser l = new Laser(laserStartLocation,nextDropLocation,2400,200);
-            l.start(plugin);
-        } catch (Exception e){
-            plugin.getServer().getLogger().info(e.toString());
-        }
+
     }
 
 

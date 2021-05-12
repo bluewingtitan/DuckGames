@@ -1,6 +1,7 @@
 package com.bluewingtitan.duckgames;
 
 import com.bluewingtitan.duckgames.drops.DropHelper;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -38,6 +39,23 @@ public class DebugCommand  implements CommandExecutor {
 
                     }
                     return true;
+                }
+
+
+                if(strings[0].contains("ff")){
+                    int time = Integer.parseInt(strings[1].trim());
+                    Plugin.plugin.time += time*60;
+                }
+
+
+                if(strings[0].contains("t")){
+                    commandSender.sendMessage(Plugin.plugin.time/60f + " minutes");
+                }
+
+                if(strings[0].contains("shrink")){
+                    int size = Integer.parseInt(strings[1].trim());
+                    int time = Integer.parseInt(strings[2].trim());
+                    Plugin.plugin.shrink(size, time);
                 }
 
 

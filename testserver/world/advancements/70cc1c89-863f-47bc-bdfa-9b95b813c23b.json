@@ -1,0 +1,12 @@
+{
+  "minecraft:adventure/adventuring_time": {
+    "criteria": {
+      "minecraft:deep_lukewarm_ocean": "2021-05-11 20:37:06 +0200",
+      "minecraft:beach": "2021-05-11 20:37:05 +0200",
+      "minecraft:river": "2021-05-11 20:37:03 +0200",
+      "minecraft:plains": "2021-05-11 20:35:54 +0200"
+    },
+    "done": false
+  },
+  "DataVersion": 2586
+}

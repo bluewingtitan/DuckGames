@@ -1,7 +1,25 @@
 [
   {
+    "uuid": "d2960f25-8f4b-41aa-991d-c81603c400cb",
+    "name": "CTorin",
+    "level": 4,
+    "bypassesPlayerLimit": false
+  },
+  {
+    "uuid": "70cc1c89-863f-47bc-bdfa-9b95b813c23b",
+    "name": "DrBrodex",
+    "level": 4,
+    "bypassesPlayerLimit": false
+  },
+  {
     "uuid": "05ea236c-56c5-4823-8897-f2390af9b972",
     "name": "Devallin",
+    "level": 4,
+    "bypassesPlayerLimit": false
+  },
+  {
+    "uuid": "5b0ba0b1-a6de-4416-8656-ae0d4ee53e08",
+    "name": "Tigrel",
     "level": 4,
     "bypassesPlayerLimit": false
   }

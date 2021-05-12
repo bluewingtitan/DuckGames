@@ -21,7 +21,6 @@ import java.util.Random;
 
 public class Plugin extends JavaPlugin implements Listener {
 
-
     public static Plugin plugin;
 
     public static Random random = new Random();
@@ -33,6 +32,9 @@ public class Plugin extends JavaPlugin implements Listener {
     int task;
     public int time;
     ConsoleCommandSender console;
+
+    public List<DisconnectedPlayer> disconnectedPlayers = new ArrayList<DisconnectedPlayer>();
+
 
     @Override
     public void onEnable() {
@@ -95,7 +97,6 @@ public class Plugin extends JavaPlugin implements Listener {
             public void run() {
                 Bukkit.getServer().dispatchCommand(console, "gamerule logAdminCommands false");
                 Bukkit.getServer().dispatchCommand(console, "gamerule commandBlockOutput false");
-                Bukkit.getServer().dispatchCommand(console, "gamerule reducedDebugInfo true");
                 Bukkit.getServer().dispatchCommand(console, "gamerule doInsomnia false");
                 Bukkit.getServer().dispatchCommand(console, "gamerule announceAdvancements false");
                 Bukkit.getServer().dispatchCommand(console, "gamerule announceAdvancements false");
@@ -131,15 +132,24 @@ public class Plugin extends JavaPlugin implements Listener {
     }
 
 
-
     private void spreadPlayers(){
-        Bukkit.getServer().dispatchCommand(console,"spreadplayers 0 0 100 200 false @a");
+        Bukkit.getServer().dispatchCommand(console,"spreadplayers 0 0 200 100 false @a");
     }
 
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
         if(started){
+
+            for (DisconnectedPlayer p: disconnectedPlayers.toArray(new DisconnectedPlayer[0])) {
+                if(event.getPlayer().getDisplayName().equals(p.playerName)){
+                    disconnectedPlayers.remove(p);
+                    event.getPlayer().setHealth(2);
+                    announce(ChatColor.AQUA + event.getPlayer().getDisplayName() + ChatColor.WHITE + " ist wieder dabei!");
+                    return;
+                }
+            }
+
             event.getPlayer().setGameMode(GameMode.SPECTATOR);
             event.getPlayer().sendMessage("Du bist nach dem Start des Matches gejoined und bist nun Spectator.");
         } else {
@@ -157,18 +167,20 @@ public class Plugin extends JavaPlugin implements Listener {
     public void onPlayerDie(PlayerDeathEvent event){
         if(!started) return;
 
-        playerDropOutLogic();
+        playerDropOutLogic(event.getEntity());
 
         event.getEntity().setGameMode(GameMode.SPECTATOR);
     }
 
+    @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event){
         if(!started) return;
 
-        playerDropOutLogic();
+        disconnectedPlayers.add(new DisconnectedPlayer(event.getPlayer().getDisplayName()));
+        announce(ChatColor.AQUA + event.getPlayer().getDisplayName() + ChatColor.WHITE + " hat das Spiel verlassen und gilt in 30 Sekunden als ausgeschieden.");
     }
 
-    private void playerDropOutLogic() {
+    public void playerDropOutLogic(Player playerDied) {
 
         int playersAlive = 0;
         Player lastPlayerCandidate = null;
@@ -176,7 +188,7 @@ public class Plugin extends JavaPlugin implements Listener {
         for (Player player : Bukkit.getOnlinePlayers())
         {
             //Player the sound for all players
-            if(player.getGameMode() == GameMode.SURVIVAL) {
+            if(player.getGameMode() == GameMode.SURVIVAL && playerDied != player) {
                 playersAlive++;
                 lastPlayerCandidate = player; // save pointer in case it might be needed later.
             }
@@ -191,17 +203,15 @@ public class Plugin extends JavaPlugin implements Listener {
                 player.playSound(player.getLocation(), Sound.EVENT_RAID_HORN , SoundCategory.MASTER, 10f,1);
                 player.sendTitle(ChatColor.GOLD + "SIEGER, SIEGER, ENTENKRIEGER!",ChatColor.RED + lastPlayerCandidate.getDisplayName() + ChatColor.WHITE + " IST DIE ULTIMATIVE ENTE!",1,5000,10);
             }
-            started = false;
-        }
-
-        if(playersAlive == 0){
+        } else if(playersAlive == 0){
             // Last man standing!
             for (Player player : Bukkit.getOnlinePlayers())
             {
                 player.playSound(player.getLocation(), Sound.EVENT_RAID_HORN , SoundCategory.MASTER, 10f,1);
                 player.sendTitle(ChatColor.GOLD + "D:",ChatColor.RED + "NIEMAND TRÄGT DIESMAL DEN SIEG DAVON!",1,5000,10);
             }
-            started = false;
+        } else {
+            announce(ChatColor.RED + "" + playersAlive + ChatColor.WHITE + " Spieler am Leben.");
         }
     }
 
@@ -217,7 +227,13 @@ public class Plugin extends JavaPlugin implements Listener {
     }
 
     public void shrink(int goal, int seconds){
-        Bukkit.getServer().dispatchCommand(console,"worldborder set " + goal + " " + seconds);
+        for (World w: getServer().getWorlds()) {
+            if(w.getName().contains("nether")){
+                w.getWorldBorder().setSize(goal/2, seconds);
+            } else{
+                w.getWorldBorder().setSize(goal, seconds);
+            }
+        }
     }
 
 }

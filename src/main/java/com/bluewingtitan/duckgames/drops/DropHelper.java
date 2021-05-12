@@ -99,7 +99,7 @@ public class DropHelper {
         goodDrops.add(new StaticDrop(Material.GOLDEN_HELMET,1));
         goodDrops.add(new StaticDrop(Material.GOLDEN_LEGGINGS,1));
         goodDrops.add(new RandomDrop(Material.STRING, 1, 3, 0.5f));
-        goodDrops.add(new RandomDrop(Material.ARROW, 2, 2, 2f));
+        goodDrops.add(new RandomDrop(Material.ARROW, 2, 2, 0.8f));
         goodDrops.add(new StaticDrop(Material.BOW,1));
         goodDrops.add(new StaticDrop(Material.DARK_OAK_BOAT,1));
         goodDrops.add(new RandomDrop(Material.LADDER, 2, 10, 3f));
@@ -109,23 +109,23 @@ public class DropHelper {
 
         // better drops
         betterDrops.add(new RandomDrop(Material.TNT, 1, 4, 0.6f));
-        betterDrops.add(new RandomDrop(Material.ENDER_PEARL, 1, 3, 0.75f));
-        betterDrops.add(new RandomDrop(Material.LAPIS_LAZULI, 4, 8, 2f));
+        betterDrops.add(new RandomDrop(Material.ENDER_PEARL, 1, 1, 0.15f));
+        betterDrops.add(new RandomDrop(Material.LAPIS_LAZULI, 4, 5, 1.4f));
 
         // great drops
-        greatDrops.add(new RandomDrop(Material.IRON_INGOT, 2, 11, 3f));
-        greatDrops.add(new RandomDrop(Material.APPLE, 10, 17, 4f));
+        greatDrops.add(new RandomDrop(Material.IRON_INGOT, 2, 4, 1f));
+        greatDrops.add(new RandomDrop(Material.APPLE, 8, 12, 4f));
         greatDrops.add(new RandomDrop(Material.DRAGON_HEAD, 1, 1, 0.2f));
-        greatDrops.add(new RandomDrop(Material.ENDER_PEARL, 2, 5, 0.75f));
+        greatDrops.add(new RandomDrop(Material.ENDER_PEARL, 2, 2, 0.35f));
         greatDrops.add(new StaticDrop(Material.GOLDEN_APPLE,1));
         greatDrops.add(new RandomDrop(Material.TNT, 3, 6, 0.3f));
         greatDrops.add(new StaticDrop(Material.WATER_BUCKET,1));
-        greatDrops.add(new RandomDrop(Material.HAY_BLOCK, 1, 7, 3f));
+        greatDrops.add(new RandomDrop(Material.HAY_BLOCK, 1, 7, 2f));
 
         // awesome drops
         awesomeDrops.add(new RandomDrop(Material.DIAMOND, 1, 2, 0.3f));
         awesomeDrops.add(new RandomDrop(Material.SPECTRAL_ARROW, 3, 10, 1.3f));
-        awesomeDrops.add(new StaticDrop(Material.GOLDEN_APPLE,3));
+        awesomeDrops.add(new StaticDrop(Material.GOLDEN_APPLE,2));
         awesomeDrops.add(new StaticDrop(CustomItemHelper.fakeGapple()));
     }
 
