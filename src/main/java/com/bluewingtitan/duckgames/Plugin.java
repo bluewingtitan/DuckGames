@@ -176,6 +176,8 @@ public class Plugin extends JavaPlugin implements Listener {
     public void onPlayerLeave(PlayerQuitEvent event){
         if(!started) return;
 
+        if(event.getPlayer().getGameMode() == GameMode.SPECTATOR) return;
+
         disconnectedPlayers.add(new DisconnectedPlayer(event.getPlayer().getDisplayName()));
         announce(ChatColor.AQUA + event.getPlayer().getDisplayName() + ChatColor.WHITE + " hat das Spiel verlassen und gilt in 30 Sekunden als ausgeschieden.");
     }
