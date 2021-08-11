@@ -4,3 +4,5 @@ A Spigot Plugin for simple, yet configurable quickly setup hunger games with fri
 You'll have to build it yourself right now. But I might change that.
 
 Feel free to reuse for own projects, keep in mind that this was coded in a few hours. Don't expect the cleanest code. Expect working code at best. It's a side side project.
+
+Oh also it's intended to be a one trick pony, one round followed by a full shutdown, world reset and fresh start (if a new round should follow).
