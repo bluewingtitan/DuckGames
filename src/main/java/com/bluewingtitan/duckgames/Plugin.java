@@ -102,7 +102,7 @@ public class Plugin extends JavaPlugin implements Listener {
                 Bukkit.getServer().dispatchCommand(console, "gamerule announceAdvancements false");
                 shrink(config.getInt("startBorder"),0);
             }
-        },120l);
+        }, 120L);
 
     }
 
@@ -203,7 +203,7 @@ public class Plugin extends JavaPlugin implements Listener {
             for (Player player : Bukkit.getOnlinePlayers())
             {
                 player.playSound(player.getLocation(), Sound.EVENT_RAID_HORN , SoundCategory.MASTER, 10f,1);
-                player.sendTitle(ChatColor.GOLD + "SIEGER, SIEGER, ENTENKRIEGER!",ChatColor.RED + lastPlayerCandidate.getDisplayName() + ChatColor.WHITE + " IST DIE ULTIMATIVE ENTE!",1,5000,10);
+                player.sendTitle(ChatColor.GOLD + "SIEGER, SIEGER!",ChatColor.RED + lastPlayerCandidate.getDisplayName().toUpperCase() + ChatColor.WHITE + ", DER ENTENKRIEGER!",1,5000,10);
             }
         } else if(playersAlive == 0){
             // Last man standing!

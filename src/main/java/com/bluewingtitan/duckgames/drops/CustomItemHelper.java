@@ -30,7 +30,7 @@ public class CustomItemHelper {
         ItemMeta meta = stack.getItemMeta();
         meta.setUnbreakable(true);
         meta.addEnchant(Enchantment.DURABILITY,42,true);
-        meta.setDisplayName(ChatColor.GOLD + "Enchänted Golden Apple");
+        meta.setDisplayName(ChatColor.GOLD + ":POG:");
 
         stack.setItemMeta(meta);
         return stack;
